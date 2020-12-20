@@ -1,0 +1,8 @@
+fsl_csi_camera_adapter.c:60:17:CSI_ADAPTER_Init	48	static
+fsl_csi_camera_adapter.c:120:17:CSI_ADAPTER_Deinit	16	static
+fsl_csi_camera_adapter.c:127:17:CSI_ADAPTER_Start	16	static
+fsl_csi_camera_adapter.c:133:17:CSI_ADAPTER_Stop	16	static
+fsl_csi_camera_adapter.c:139:17:CSI_ADAPTER_SubmitEmptyBuffer	16	static
+fsl_csi_camera_adapter.c:145:17:CSI_ADAPTER_GetFullBuffer	16	static
+fsl_csi_camera_adapter.c:151:13:CSI_ADAPTER_Callback	32	static
+fsl_csi_camera_adapter.c:170:17:CSI_ADAPTER_InitExt	24	static

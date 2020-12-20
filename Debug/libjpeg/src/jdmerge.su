@@ -1,0 +1,8 @@
+jdmerge.c:84:1:build_ycc_rgb_table	32	static
+jdmerge.c:124:1:build_bg_ycc_rgb_table	32	static
+jdmerge.c:168:1:start_pass_merged_upsample	24	static
+jdmerge.c:186:1:merged_2v_upsample	56	static
+jdmerge.c:235:1:merged_1v_upsample	40	static
+jdmerge.c:268:1:h2v1_merged_upsample	96	static
+jdmerge.c:330:1:h2v2_merged_upsample	96	static
+jdmerge.c:412:1:jinit_merged_upsampler	24	static

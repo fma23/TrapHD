@@ -1,0 +1,3 @@
+fsl_soc_mipi_csi2rx.c:30:6:MIPI_CSI2RX_SoftwareReset	16	static
+fsl_soc_mipi_csi2rx.c:42:6:MIPI_CSI2RX_InitInterface	16	static
+fsl_soc_mipi_csi2rx.c:69:6:MIPI_CSI2RX_DeinitInterface	16	static

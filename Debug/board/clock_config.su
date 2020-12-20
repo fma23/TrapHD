@@ -1,0 +1,7 @@
+fsl_clock.h:2173:24:CLOCK_GetRootClockMux	16	static
+fsl_clock.h:2216:24:CLOCK_GetRootClockDiv	16	static
+fsl_clock.h:2281:20:CLOCK_SetRootClock	16	static
+fsl_clock.h:2372:24:CLOCK_GetRootClockFreq	664	static
+fsl_dcdc.h:670:20:DCDC_SetVDD1P0BuckModeTargetVoltage	16	static
+clock_config.c:27:6:BOARD_InitBootClocks	8	static
+clock_config.c:49:6:BOARD_BootClockRUN	48	static

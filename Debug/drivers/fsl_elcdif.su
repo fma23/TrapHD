@@ -1,0 +1,11 @@
+fsl_clock.h:2302:20:CLOCK_ControlGate	16	static
+fsl_clock.h:2320:20:CLOCK_EnableClock	16	static
+fsl_clock.h:2330:20:CLOCK_DisableClock	16	static
+fsl_elcdif.c:75:17:ELCDIF_GetInstance	24	static
+fsl_elcdif.c:102:6:ELCDIF_RgbModeInit	24	static
+fsl_elcdif.c:176:6:ELCDIF_RgbModeGetDefaultConfig	16	static
+fsl_elcdif.c:204:6:ELCDIF_RgbModeSetPixelFormat	16	static
+fsl_elcdif.c:220:6:ELCDIF_Deinit	24	static
+fsl_elcdif.c:239:6:ELCDIF_RgbModeStop	16	static
+fsl_elcdif.c:254:6:ELCDIF_Reset	16	static
+fsl_elcdif.c:348:10:ELCDIF_UpdateLut	40	static

@@ -1,0 +1,14 @@
+fsl_video_common.c:19:6:VIDEO_IsYUV	16	static
+fsl_video_common.c:33:6:VIDEO_DelayMs	16	static
+fsl_video_common.c:51:9:VIDEO_GetPixelSizeBits	24	static
+fsl_video_common.c:96:10:VIDEO_RINGBUF_Init	24	static
+fsl_video_common.c:108:10:VIDEO_RINGBUF_Get	24	static
+fsl_video_common.c:133:10:VIDEO_RINGBUF_Put	24	static
+fsl_video_common.c:157:10:VIDEO_RINGBUF_GetLength	24	static
+fsl_video_common.c:171:6:VIDEO_RINGBUF_IsEmpty	16	static
+fsl_video_common.c:183:6:VIDEO_RINGBUF_IsFull	24	static
+fsl_video_common.c:205:10:VIDEO_MEMPOOL_Init	24	static
+fsl_video_common.c:218:6:VIDEO_MEMPOOL_InitEmpty	16	static
+fsl_video_common.c:224:6:VIDEO_MEMPOOL_Put	16	static
+fsl_video_common.c:231:7:VIDEO_MEMPOOL_Get	24	static
+fsl_video_common.c:244:10:VIDEO_MEMPOOL_GetCount	16	static

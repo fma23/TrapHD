@@ -1,0 +1,16 @@
+fsl_anatop.c:21:6:ANATOP_Cm7FbbCfg	8	static
+fsl_anatop.c:34:6:ANATOP_InitWbiasCfg	16	static
+fsl_anatop.c:55:6:ANATOP_WbiasPwlvl_1p8	24	static
+fsl_anatop.c:66:6:ANATOP_WbiasNwlvl_1p8	24	static
+fsl_anatop.c:77:6:ANATOP_WbCfg1p8Cfg	24	static
+fsl_anatop.c:91:6:ANATOP_WbPwrSwEn1p8	24	static
+fsl_anatop.c:101:6:ANATOP_EnableWbias	24	static
+fsl_anatop.c:110:6:ANATOP_EnablePllLdo	16	static
+fsl_anatop.c:124:6:ANATOP_DisablePllLdo	8	static
+fsl_anatop.c:129:6:ANATOP_TrimLdoLpsrDig	24	static
+fsl_anatop.c:141:6:ANATOP_LdoLpsrAnaBypassOn	8	static
+fsl_anatop.c:156:6:ANATOP_LdoLpsrAnaBypassOff	8	static
+fsl_anatop.c:169:6:ANATOP_LdoLpsrDigBypassOn	8	static
+fsl_anatop.c:184:6:ANATOP_LdoLpsrDigBypassOff	8	static
+fsl_anatop.c:197:6:ANATOP_BothLdoLpsrBypassOn	8	static
+fsl_anatop.c:220:6:ANATOP_BothLdoLpsrBypassOff	8	static

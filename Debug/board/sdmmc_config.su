@@ -1,0 +1,17 @@
+core_cm7.h:2032:22:__NVIC_SetPriority	16	static
+fsl_clock.h:2173:24:CLOCK_GetRootClockMux	16	static
+fsl_clock.h:2216:24:CLOCK_GetRootClockDiv	16	static
+fsl_clock.h:2281:20:CLOCK_SetRootClock	16	static
+fsl_clock.h:2372:24:CLOCK_GetRootClockFreq	664	static
+fsl_gpio.h:174:24:GPIO_PinRead	16	static
+fsl_gpio.h:293:24:GPIO_PortGetInterruptFlags	16	static
+fsl_gpio.h:316:20:GPIO_PortClearInterruptFlags	16	static
+fsl_iomuxc.h:1677:20:IOMUXC_SetPinConfig	24	static
+sdmmc_config.c:41:10:BOARD_USDHC1ClockConfiguration	40	static
+sdmmc_config.c:63:6:BOARD_SDCardGetDetectStatus	8	static
+sdmmc_config.c:68:6:GPIO3_Combined_16_31_IRQHandler	16	static
+sdmmc_config.c:81:6:BOARD_SDCardDAT3PullFunction	24	static
+sdmmc_config.c:94:6:BOARD_SDCardDetectInit	24	static
+sdmmc_config.c:137:6:BOARD_SDCardPowerResetInit	16	static
+sdmmc_config.c:147:6:BOARD_SDCardPowerControl	16	static
+sdmmc_config.c:166:6:BOARD_SD_Config	32	static

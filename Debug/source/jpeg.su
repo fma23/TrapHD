@@ -1,0 +1,2 @@
+jpeg.c:44:10:JpegCompress	1152	static
+jpeg.c:116:6:rgb565_2_rgb888	32	static

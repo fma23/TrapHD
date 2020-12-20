@@ -1,0 +1,16 @@
+fsl_ov5640.c:695:17:OV5640_LoadRegVal	40	static
+fsl_ov5640.c:713:17:OV5640_SoftwareReset	24	static
+fsl_ov5640.c:720:23:OV5640_GetResolutionParam	24	static
+fsl_ov5640.c:739:37:OV5640_GetClockConfig	24	static
+fsl_ov5640.c:769:17:OV5640_SetPixelFormat	32	static
+fsl_ov5640.c:793:10:OV5640_Init	56	static
+fsl_ov5640.c:949:10:OV5640_Deinit	16	static
+fsl_ov5640.c:956:10:OV5640_Control	32	static
+fsl_ov5640.c:969:10:OV5640_Start	24	static
+fsl_ov5640.c:976:10:OV5640_Stop	24	static
+fsl_ov5640.c:983:10:OV5640_InitExt	24	static
+fsl_ov5640.c:988:10:OV5640_SetBrightness	24	static
+fsl_ov5640.c:1012:10:OV5640_SetContrast	32	static
+fsl_ov5640.c:1033:10:OV5640_SetSaturation	32	static
+fsl_ov5640.c:1055:10:OV5640_SetLightMode	32	static
+fsl_ov5640.c:1082:10:OV5640_SetSpecialEffect	32	static

@@ -1,0 +1,27 @@
+device/system_MIMXRT1176_cm7.o device/system_MIMXRT1176_cm7.d: \
+ ../device/system_MIMXRT1176_cm7.c ../device/fsl_device_registers.h \
+ ../device/MIMXRT1176_cm7.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/core_cm7.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_version.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_compiler.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_gcc.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/mpu_armv7.h \
+ ../device/system_MIMXRT1176_cm7.h ../device/MIMXRT1176_cm7_features.h
+
+../device/fsl_device_registers.h:
+
+../device/MIMXRT1176_cm7.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/core_cm7.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_version.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_compiler.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/cmsis_gcc.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\CMSIS/mpu_armv7.h:
+
+../device/system_MIMXRT1176_cm7.h:
+
+../device/MIMXRT1176_cm7_features.h:

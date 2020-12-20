@@ -1,0 +1,16 @@
+fsl_common.h:827:28:DisableGlobalIRQ	16	static
+fsl_common.h:858:24:EnableGlobalIRQ	24	static
+fsl_component_serial_manager.c:374:32:SerialManager_StartWriting	32	static
+fsl_component_serial_manager.c:422:32:SerialManager_StartReading	32	static
+fsl_component_serial_manager.c:972:32:SerialManager_Write	32	static
+fsl_component_serial_manager.c:989:32:SerialManager_Read	32	static
+fsl_component_serial_manager.c:1007:25:SerialManager_Init	24	static
+fsl_component_serial_manager.c:1158:25:SerialManager_Deinit	32	static
+fsl_component_serial_manager.c:1225:25:SerialManager_OpenWriteHandle	32	static
+fsl_component_serial_manager.c:1262:25:SerialManager_CloseWriteHandle	32	static
+fsl_component_serial_manager.c:1293:25:SerialManager_OpenReadHandle	32	static
+fsl_component_serial_manager.c:1333:25:SerialManager_CloseReadHandle	32	static
+fsl_component_serial_manager.c:1362:25:SerialManager_WriteBlocking	24	static
+fsl_component_serial_manager.c:1371:25:SerialManager_ReadBlocking	24	static
+fsl_component_serial_manager.c:1587:25:SerialManager_EnterLowpower	24	static
+fsl_component_serial_manager.c:1626:25:SerialManager_ExitLowpower	24	static
