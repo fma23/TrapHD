@@ -242,6 +242,51 @@ void BOARD_InitPins(void) {
 //        IOMUXC_GPIO_AD_25_LPUART1_RXD,          /* GPIO_AD_25 is configured as LPUART1_RXD */
 //        0U);
 
+  //LPSPI1
+  IOMUXC_SetPinMux(
+        IOMUXC_GPIO_AD_28_LPSPI1_SCK,           /* GPIO_AD_28 is configured as LPSPI1_SCK */
+        0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+    IOMUXC_SetPinMux(
+        IOMUXC_GPIO_AD_29_LPSPI1_PCS0,          /* GPIO_AD_29 is configured as LPSPI1_PCS0 */
+        0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+    IOMUXC_SetPinMux(
+        IOMUXC_GPIO_AD_30_LPSPI1_SOUT,          /* GPIO_AD_30 is configured as LPSPI1_SOUT */
+        0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+    IOMUXC_SetPinMux(
+        IOMUXC_GPIO_AD_31_LPSPI1_SIN,           /* GPIO_AD_31 is configured as LPSPI1_SIN */
+        0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+
+    IOMUXC_SetPinConfig(
+        IOMUXC_GPIO_AD_28_LPSPI1_SCK,           /* GPIO_AD_28 PAD functional properties : */
+        0x02U);                                 /* Slew Rate Field: Slow Slew Rate
+                                                   Drive Strength Field: high driver
+                                                   Pull / Keep Select Field: Pull Disable, Highz
+                                                   Pull Up / Down Config. Field: Weak pull down
+                                                   Open Drain Field: Disabled */
+    IOMUXC_SetPinConfig(
+        IOMUXC_GPIO_AD_29_LPSPI1_PCS0,          /* GPIO_AD_29 PAD functional properties : */
+        0x02U);                                 /* Slew Rate Field: Slow Slew Rate
+                                                   Drive Strength Field: high driver
+                                                   Pull / Keep Select Field: Pull Disable, Highz
+                                                   Pull Up / Down Config. Field: Weak pull down
+                                                   Open Drain Field: Disabled */
+    IOMUXC_SetPinConfig(
+        IOMUXC_GPIO_AD_30_LPSPI1_SOUT,          /* GPIO_AD_30 PAD functional properties : */
+        0x02U);                                 /* Slew Rate Field: Slow Slew Rate
+                                                   Drive Strength Field: high driver
+                                                   Pull / Keep Select Field: Pull Disable, Highz
+                                                   Pull Up / Down Config. Field: Weak pull down
+                                                   Open Drain Field: Disabled */
+    IOMUXC_SetPinConfig(
+        IOMUXC_GPIO_AD_31_LPSPI1_SIN,           /* GPIO_AD_31 PAD functional properties : */
+        0x02U);                                 /* Slew Rate Field: Slow Slew Rate
+                                                   Drive Strength Field: high driver
+                                                   Pull / Keep Select Field: Pull Disable, Highz
+                                                   Pull Up / Down Config. Field: Weak pull down
+                                                   Open Drain Field: Disabled */
+
+
+
   //flexSPI
   IOMUXC_SetPinMux(
         IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS,    /* GPIO_SD_B2_05 is configured as FLEXSPI1_A_DQS */

@@ -29,7 +29,15 @@
 #include "fsl_flexspi.h"
 #include "fsl_cache.h"
 
+#include "fsl_lpspi.h"
+#include <MX25L4006E.h>
+
 #include "ImageData.h"
+
+
+#include "pin_mux.h"
+#include "fsl_soc_src.h"
+#include "clock_config.h"
 
 
 
@@ -42,9 +50,8 @@
  * to fit the display output.
  */
 
-#include "pin_mux.h"
-#include "fsl_soc_src.h"
-#include "clock_config.h"
+
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -52,12 +59,10 @@
 
 /* CSI output frame buffer is XRGB8888. */
 #define DEMO_CAMERA_BUFFER_BPP   4  //3
-
 #define DEMO_CAMERA_BUFFER_COUNT 3
 
 /* LCD input frame buffer is RGB565, converted by PXP. */
 #define DEMO_LCD_BUFFER_BPP 2
-
 #define DEMO_LCD_BUFFER_COUNT 2
 
 #if (((DEMO_CAMERA_WIDTH < DEMO_CAMERA_HEIGHT) && (DEMO_BUFFER_WIDTH > DEMO_BUFFER_HEIGHT)) || \
@@ -92,7 +97,7 @@ extern volatile bool TimeToSave;
 static bool SdCard_setupFiles(void);
 static bool SaveCapturedImage(uint8_t cameraBuffer[][DEMO_CAMERA_HEIGHT][DEMO_CAMERA_WIDTH * DEMO_CAMERA_BUFFER_BPP]);
 static bool mSDCARDSaveImage(uint8_t ImageBuffer[],int size);
-void QSPIflashSaveImage(void);
+int QSPIflashSaveImage(void);
 
 
 
@@ -119,16 +124,6 @@ volatile bool s_newFrameShown = false;
 static dc_fb_info_t fbInfo;
 volatile uint8_t s_lcdActiveFbIdx;
 
-
-//FLASH DECLARATIONS
-
-/* Program data buffer should be 4-bytes alignment, which can avoid busfault due to this memory region is configured as
-   Device Memory by MPU. */
-//SDK_ALIGN(static uint8_t s_nor_program_buffer[256], 4);
-//static uint8_t s_nor_read_buffer[256];
-
-
-//SDK_ALIGN(static uint8_t g_bufferWrite[182942], 4);
 static uint8_t s_nor_read_buffer[IMGBUF_SIZE];
 
 
@@ -177,7 +172,6 @@ static void BOARD_ResetDisplayMix(void)
  */
  int main(void)
 {
-
     bool status=false;
 
     BOARD_ConfigMPU();
@@ -200,12 +194,26 @@ static void BOARD_ResetDisplayMix(void)
 
     DEMO_InitDisplay();
 
-    /*create image directory and files used just for debugging*/
+    SPI1_Init();   /* initialize SPI1 */
+
+    /* test sdcard driver: create a directory and save image file*/
     status=SdCard_setupFiles();
 
-    //SaveCapturedImage(s_cameraBuffer);
 
-    /*start mipi  */
+    /* test the MX25L4006E Flash */
+    status= TestMX25L4006E();
+    if(status)
+    {
+    	PRINTF(" MX25L4006E Flash test passed!\n");
+    }
+    else
+    {
+    	PRINTF(" MX25L4006E Flash test failed! \n");
+
+    }
+
+
+    /*test csi mipi: start mipi  */
     DEMO_CSI_MIPI_RGB();
 
 
@@ -805,8 +813,6 @@ static bool SdCard_setupFiles(void)
       PRINTF("\r\nCard detected.\r\n");
     }
 
-
-
     if (f_mount(&g_fileSystem, driverNumberBuffer, 0U))
     {
         PRINTF("Mount volume failed.\r\n");
@@ -927,7 +933,7 @@ static bool SdCard_setupFiles(void)
 }
 
 
-void QSPIflashSaveImage(void)
+int QSPIflashSaveImage(void)
 {
 	status_t status;
 	uint32_t i = 0;

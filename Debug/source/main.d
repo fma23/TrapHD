@@ -49,6 +49,8 @@ source/main.o source/main.d: ../source/main.c \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\board/clock_config.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_flexspi.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_cache.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_lpspi.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\spiFash/MX25L4006E.h \
  ../source/ImageData.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_soc_src.h
 
@@ -151,6 +153,10 @@ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\boa
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_flexspi.h:
 
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_cache.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_lpspi.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\spiFash/MX25L4006E.h:
 
 ../source/ImageData.h:
 

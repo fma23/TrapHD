@@ -1,0 +1,12 @@
+MX25L4006E.c:26:6:SPI1_Init	16	static
+MX25L4006E.c:41:6:SPI_FLASH_ReadID	48	static
+MX25L4006E.c:77:6:commandWriteEnable	40	static
+MX25L4006E.c:119:6:checkStatus	48	static
+MX25L4006E.c:142:6:commandPageProgram	584	static
+MX25L4006E.c:275:6:ReadMemory	320	static
+MX25L4006E.c:339:6:commandSectorErase	48	static
+MX25L4006E.c:397:6:MX25L4006E_EraseSector	24	static
+MX25L4006E.c:434:6:MX25L4006E_Read	24	static
+MX25L4006E.c:444:6:MX25L4006E_Write	32	static
+MX25L4006E.c:455:6:testSPItransfer	56	static
+MX25L4006E.c:487:6:TestMX25L4006E	544	static

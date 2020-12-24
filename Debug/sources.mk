@@ -32,6 +32,7 @@ sdmmc/host \
 sdmmc/osa \
 sdmmc/src \
 source \
+spiFash \
 startup \
 utilities \
 video \
