@@ -12,7 +12,7 @@ RM := rm -rf
 -include video/subdir.mk
 -include utilities/subdir.mk
 -include startup/subdir.mk
--include spiFash/subdir.mk
+-include spiFlash/subdir.mk
 -include source/subdir.mk
 -include sdmmc/src/subdir.mk
 -include sdmmc/osa/subdir.mk

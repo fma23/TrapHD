@@ -6,6 +6,7 @@
  */
 
 #include <FlashConfig.h>
+#include <spiFlash/MX25L4006E.h>
 #include "display_support.h"
 #include "camera_support.h"
 #include "fsl_pxp.h"
@@ -30,8 +31,6 @@
 #include "fsl_cache.h"
 
 #include "fsl_lpspi.h"
-#include <MX25L4006E.h>
-
 #include "ImageData.h"
 
 

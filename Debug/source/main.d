@@ -12,6 +12,7 @@ source/main.o source/main.d: ../source/main.c \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\device/system_MIMXRT1176_cm7.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\device/MIMXRT1176_cm7_features.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_clock.h \
+ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI/spiFlash/MX25L4006E.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\board/display_support.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\video/fsl_dc_fb.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\video/fsl_video_common.h \
@@ -50,7 +51,6 @@ source/main.o source/main.d: ../source/main.c \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_flexspi.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_cache.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_lpspi.h \
- C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\spiFash/MX25L4006E.h \
  ../source/ImageData.h \
  C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_soc_src.h
 
@@ -79,6 +79,8 @@ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\dev
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\device/MIMXRT1176_cm7_features.h:
 
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_clock.h:
+
+C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI/spiFlash/MX25L4006E.h:
 
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\board/display_support.h:
 
@@ -155,8 +157,6 @@ C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\dri
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_cache.h:
 
 C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\drivers/fsl_lpspi.h:
-
-C:\Users\Farid\ Mabrouk\Documents\HDtrap_GIT\TrapHD_CSI_MIPI\TrapHD_CSI_MIPI\spiFash/MX25L4006E.h:
 
 ../source/ImageData.h:
 

@@ -32,7 +32,7 @@ sdmmc/host \
 sdmmc/osa \
 sdmmc/src \
 source \
-spiFash \
+spiFlash \
 startup \
 utilities \
 video \
