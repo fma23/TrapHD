@@ -130,7 +130,7 @@ bool checkStatus(uint8_t Flag)
 		return false;
 	}
 
-	return true;
+	return (RxData[1]&Flag);
 }
 
 /*******************************************************************************
@@ -525,6 +525,8 @@ bool TestMX25L4006E (void)
    	  PRINTF( "Flash SPI transfer fails! \r\n");
    	  return false;
    	}
+
+
    /* read memory */
    size=256;  //number of bytes to read
    status= MX25L4006E_Read(0,FlashDataRd,size,500);

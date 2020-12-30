@@ -1,4 +1,4 @@
 fsl_sccb.c:20:10:SCCB_WriteReg	32	static
-fsl_sccb.c:26:10:SCCB_WriteMultiRegs	40	static
-fsl_sccb.c:36:10:SCCB_ReadReg	40	static
-fsl_sccb.c:42:10:SCCB_ModifyReg	32	static
+fsl_sccb.c:26:10:SCCB_WriteMultiRegs	8	static
+fsl_sccb.c:36:10:SCCB_ReadReg	12	static
+fsl_sccb.c:42:10:SCCB_ModifyReg	56	static

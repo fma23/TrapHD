@@ -1,4 +1,4 @@
-fsl_rm68200.c:307:10:RM68200_Init	40	static
-fsl_rm68200.c:361:10:RM68200_Deinit	24	static
-fsl_rm68200.c:374:10:RM68200_Start	24	static
-fsl_rm68200.c:382:10:RM68200_Stop	24	static
+fsl_rm68200.c:307:10:RM68200_Init	32	static
+fsl_rm68200.c:361:10:RM68200_Deinit	8	static
+fsl_rm68200.c:374:10:RM68200_Start	0	static
+fsl_rm68200.c:382:10:RM68200_Stop	0	static

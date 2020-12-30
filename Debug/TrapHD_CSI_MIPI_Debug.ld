@@ -6,7 +6,7 @@
  * Generated linker script file for MIMXRT1176xxxxx
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.23
- * MCUXpresso IDE v11.2.1 [Build 4149] [2020-10-07] on 24-Dec-2020 12:05:58 AM
+ * MCUXpresso IDE v11.2.1 [Build 4149] [2020-10-07] on 29-Dec-2020 5:07:31 PM
  */
 
 INCLUDE "TrapHD_CSI_MIPI_Debug_library.ld"
@@ -99,7 +99,8 @@ SECTIONS
 
     .text : ALIGN(4)
     {
-        *(EXCLUDE_FILE(*flexspi_nor_flash_ops.o *fsl_flexspi.o) .text*)       *(.rodata .rodata.* .constdata .constdata.*)
+       *(.text*)
+       *(.rodata .rodata.* .constdata .constdata.*)
        . = ALIGN(4);
     } > BOARD_FLASH
     /*
@@ -129,7 +130,11 @@ SECTIONS
         PROVIDE(__start_data_SRAM_ITC_cm7 = .) ;
         *(.ramfunc.$RAM2)
         *(.ramfunc.$SRAM_ITC_cm7)
-                . = ALIGN(4) ;
+        *(.data.$RAM2)
+        *(.data.$SRAM_ITC_cm7)
+        *(.data.$RAM2.*)
+        *(.data.$SRAM_ITC_cm7.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM2 = .) ;
         PROVIDE(__end_data_SRAM_ITC_cm7 = .) ;
      } > SRAM_ITC_cm7 AT>BOARD_FLASH
@@ -143,9 +148,10 @@ SECTIONS
         PROVIDE(__start_data_SRAM_OC1 = .) ;
         *(.ramfunc.$RAM3)
         *(.ramfunc.$SRAM_OC1)
-        
-        *flexspi_nor_flash_ops.o(.text*)
-        *fsl_flexspi.o(.text*)
+        *(.data.$RAM3)
+        *(.data.$SRAM_OC1)
+        *(.data.$RAM3.*)
+        *(.data.$SRAM_OC1.*)
         . = ALIGN(4) ;
         PROVIDE(__end_data_RAM3 = .) ;
         PROVIDE(__end_data_SRAM_OC1 = .) ;
@@ -160,7 +166,11 @@ SECTIONS
         PROVIDE(__start_data_SRAM_OC2 = .) ;
         *(.ramfunc.$RAM4)
         *(.ramfunc.$SRAM_OC2)
-                . = ALIGN(4) ;
+        *(.data.$RAM4)
+        *(.data.$SRAM_OC2)
+        *(.data.$RAM4.*)
+        *(.data.$SRAM_OC2.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM4 = .) ;
         PROVIDE(__end_data_SRAM_OC2 = .) ;
      } > SRAM_OC2 AT>BOARD_FLASH
@@ -174,7 +184,11 @@ SECTIONS
         PROVIDE(__start_data_SRAM_OC_ECC1 = .) ;
         *(.ramfunc.$RAM5)
         *(.ramfunc.$SRAM_OC_ECC1)
-                . = ALIGN(4) ;
+        *(.data.$RAM5)
+        *(.data.$SRAM_OC_ECC1)
+        *(.data.$RAM5.*)
+        *(.data.$SRAM_OC_ECC1.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM5 = .) ;
         PROVIDE(__end_data_SRAM_OC_ECC1 = .) ;
      } > SRAM_OC_ECC1 AT>BOARD_FLASH
@@ -188,7 +202,11 @@ SECTIONS
         PROVIDE(__start_data_SRAM_OC_ECC2 = .) ;
         *(.ramfunc.$RAM6)
         *(.ramfunc.$SRAM_OC_ECC2)
-                . = ALIGN(4) ;
+        *(.data.$RAM6)
+        *(.data.$SRAM_OC_ECC2)
+        *(.data.$RAM6.*)
+        *(.data.$SRAM_OC_ECC2.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM6 = .) ;
         PROVIDE(__end_data_SRAM_OC_ECC2 = .) ;
      } > SRAM_OC_ECC2 AT>BOARD_FLASH
@@ -202,7 +220,11 @@ SECTIONS
         PROVIDE(__start_data_BOARD_SDRAM = .) ;
         *(.ramfunc.$RAM7)
         *(.ramfunc.$BOARD_SDRAM)
-                . = ALIGN(4) ;
+        *(.data.$RAM7)
+        *(.data.$BOARD_SDRAM)
+        *(.data.$RAM7.*)
+        *(.data.$BOARD_SDRAM.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM7 = .) ;
         PROVIDE(__end_data_BOARD_SDRAM = .) ;
      } > BOARD_SDRAM AT>BOARD_FLASH
@@ -217,7 +239,11 @@ SECTIONS
         *(.ramfunc.$RAM8)
         *(.ramfunc.$NCACHE_REGION)
        *(NonCacheable.init)
-                . = ALIGN(4) ;
+        *(.data.$RAM8)
+        *(.data.$NCACHE_REGION)
+        *(.data.$RAM8.*)
+        *(.data.$NCACHE_REGION.*)
+        . = ALIGN(4) ;
         PROVIDE(__end_data_RAM8 = .) ;
         PROVIDE(__end_data_NCACHE_REGION = .) ;
      } > NCACHE_REGION AT>BOARD_FLASH
@@ -255,7 +281,11 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM2 = .) ;
        PROVIDE(__start_bss_SRAM_ITC_cm7 = .) ;
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM2)
+       *(.bss.$SRAM_ITC_cm7)
+       *(.bss.$RAM2.*)
+       *(.bss.$SRAM_ITC_cm7.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM2 = .) ;
        PROVIDE(__end_bss_SRAM_ITC_cm7 = .) ;
     } > SRAM_ITC_cm7 AT> SRAM_ITC_cm7
@@ -265,8 +295,10 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM3 = .) ;
        PROVIDE(__start_bss_SRAM_OC1 = .) ;
-        
-        *(.bss*)
+       *(.bss.$RAM3)
+       *(.bss.$SRAM_OC1)
+       *(.bss.$RAM3.*)
+       *(.bss.$SRAM_OC1.*)
        . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM3 = .) ;
        PROVIDE(__end_bss_SRAM_OC1 = .) ;
@@ -277,7 +309,11 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM4 = .) ;
        PROVIDE(__start_bss_SRAM_OC2 = .) ;
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM4)
+       *(.bss.$SRAM_OC2)
+       *(.bss.$RAM4.*)
+       *(.bss.$SRAM_OC2.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM4 = .) ;
        PROVIDE(__end_bss_SRAM_OC2 = .) ;
     } > SRAM_OC2 AT> SRAM_OC2
@@ -287,7 +323,11 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM5 = .) ;
        PROVIDE(__start_bss_SRAM_OC_ECC1 = .) ;
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM5)
+       *(.bss.$SRAM_OC_ECC1)
+       *(.bss.$RAM5.*)
+       *(.bss.$SRAM_OC_ECC1.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM5 = .) ;
        PROVIDE(__end_bss_SRAM_OC_ECC1 = .) ;
     } > SRAM_OC_ECC1 AT> SRAM_OC_ECC1
@@ -297,7 +337,11 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM6 = .) ;
        PROVIDE(__start_bss_SRAM_OC_ECC2 = .) ;
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM6)
+       *(.bss.$SRAM_OC_ECC2)
+       *(.bss.$RAM6.*)
+       *(.bss.$SRAM_OC_ECC2.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM6 = .) ;
        PROVIDE(__end_bss_SRAM_OC_ECC2 = .) ;
     } > SRAM_OC_ECC2 AT> SRAM_OC_ECC2
@@ -307,7 +351,11 @@ SECTIONS
     {
        PROVIDE(__start_bss_RAM7 = .) ;
        PROVIDE(__start_bss_BOARD_SDRAM = .) ;
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM7)
+       *(.bss.$BOARD_SDRAM)
+       *(.bss.$RAM7.*)
+       *(.bss.$BOARD_SDRAM.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM7 = .) ;
        PROVIDE(__end_bss_BOARD_SDRAM = .) ;
     } > BOARD_SDRAM AT> BOARD_SDRAM
@@ -318,7 +366,11 @@ SECTIONS
        PROVIDE(__start_bss_RAM8 = .) ;
        PROVIDE(__start_bss_NCACHE_REGION = .) ;
        *(NonCacheable)
-               . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
+       *(.bss.$RAM8)
+       *(.bss.$NCACHE_REGION)
+       *(.bss.$RAM8.*)
+       *(.bss.$NCACHE_REGION.*)
+       . = ALIGN (. != 0 ? 4 : 1) ; /* avoid empty segment */
        PROVIDE(__end_bss_RAM8 = .) ;
        PROVIDE(__end_bss_NCACHE_REGION = .) ;
     } > NCACHE_REGION AT> NCACHE_REGION
@@ -450,7 +502,7 @@ SECTIONS
     } > SRAM_DTC_cm7 AT> SRAM_DTC_cm7
 
     /* Reserve and place Heap within memory map */
-    _HeapSize = 0x4000;
+    _HeapSize = 0x35000;
     .heap :  ALIGN(4)
     {
         _pvHeapStart = .;
@@ -459,7 +511,7 @@ SECTIONS
         _pvHeapLimit = .;
     } > SRAM_DTC_cm7
 
-     _StackSize = 0x4000;
+     _StackSize = 0x5000;
      /* Reserve space in memory for Stack */
     .heap2stackfill  :
     {

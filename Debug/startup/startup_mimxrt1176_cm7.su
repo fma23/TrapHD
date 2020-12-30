@@ -1,6 +1,3 @@
-startup_mimxrt1176_cm7.c:803:6:data_init	8	static
-startup_mimxrt1176_cm7.c:817:6:bss_init	4	static
-startup_mimxrt1176_cm7.c:847:6:ResetISR	8	static
 startup_mimxrt1176_cm7.c:940:14:NMI_Handler	0	static
 startup_mimxrt1176_cm7.c:944:14:HardFault_Handler	0	static
 startup_mimxrt1176_cm7.c:948:14:MemManage_Handler	0	static
@@ -10,6 +7,9 @@ startup_mimxrt1176_cm7.c:960:14:SVC_Handler	0	static
 startup_mimxrt1176_cm7.c:964:14:DebugMon_Handler	0	static
 startup_mimxrt1176_cm7.c:968:14:PendSV_Handler	0	static
 startup_mimxrt1176_cm7.c:972:14:SysTick_Handler	0	static
+startup_mimxrt1176_cm7.c:803:6:data_init	8	static
+startup_mimxrt1176_cm7.c:817:6:bss_init	4	static
+startup_mimxrt1176_cm7.c:847:6:ResetISR	8	static
 startup_mimxrt1176_cm7.c:980:14:IntDefaultHandler	0	static
 startup_mimxrt1176_cm7.c:990:11:DMA0_DMA16_IRQHandler	8	static
 startup_mimxrt1176_cm7.c:994:11:DMA1_DMA17_IRQHandler	8	static

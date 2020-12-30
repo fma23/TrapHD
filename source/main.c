@@ -40,6 +40,7 @@
 
 
 
+
 /*
  * In this example, the camera device output pixel format is RGB565, the MIPI_CSI
  * converts it to RGB888 internally and sends to CSI. In other words, the CSI input
@@ -57,11 +58,11 @@
 #define DEMO_PXP PXP
 
 /* CSI output frame buffer is XRGB8888. */
-#define DEMO_CAMERA_BUFFER_BPP   4  //3
-#define DEMO_CAMERA_BUFFER_COUNT 3
+#define DEMO_CAMERA_BUFFER_BPP   4
+#define DEMO_CAMERA_BUFFER_COUNT 2 //3
 
 /* LCD input frame buffer is RGB565, converted by PXP. */
-#define DEMO_LCD_BUFFER_BPP 2
+#define DEMO_LCD_BUFFER_BPP   2
 #define DEMO_LCD_BUFFER_COUNT 2
 
 #if (((DEMO_CAMERA_WIDTH < DEMO_CAMERA_HEIGHT) && (DEMO_BUFFER_WIDTH > DEMO_BUFFER_HEIGHT)) || \
@@ -76,10 +77,14 @@
 #define IMAGE_HEIGHT        CAMERA_HEIGHT
 #define COMPRESS_LINES      1u
 
-
-
 #define USER_LED_GPIO       GPIO9
 #define USER_LED_GPIO_PIN   3U
+
+
+
+
+//#define QFLASHTEST
+
 
 /*******************************************************************************
  * Prototypes
@@ -89,30 +94,28 @@ static void DEMO_InitCamera(void);
 static void DEMO_InitDisplay(void);
 static void DEMO_InitPxp(void);
 static void DEMO_CSI_MIPI_RGB(void);
+static void BOARD_ResetDisplayMix(void);
 
 
 
+//externs
+extern bool TestSdCard(void);
+extern bool QSPIflashSaveImage(void);
+extern status_t JpegCompress(uint8_t *buffer);
 extern volatile bool TimeToSave;
-static bool SdCard_setupFiles(void);
-static bool SaveCapturedImage(uint8_t cameraBuffer[][DEMO_CAMERA_HEIGHT][DEMO_CAMERA_WIDTH * DEMO_CAMERA_BUFFER_BPP]);
-static bool mSDCARDSaveImage(uint8_t ImageBuffer[],int size);
-int QSPIflashSaveImage(void);
 
 
 
 /*********************************************************************************************************
  * Variables
  *********************************************************************************************************/
-AT_NONCACHEABLE_SECTION_ALIGN(static uint8_t s_cameraBuffer[DEMO_CAMERA_BUFFER_COUNT][DEMO_CAMERA_HEIGHT]
+AT_NONCACHEABLE_SECTION_ALIGN(uint8_t s_cameraBuffer[DEMO_CAMERA_BUFFER_COUNT][DEMO_CAMERA_HEIGHT]
                                                            [DEMO_CAMERA_WIDTH * DEMO_CAMERA_BUFFER_BPP],
                               DEMO_CAMERA_BUFFER_ALIGN);
-
 
 AT_NONCACHEABLE_SECTION_ALIGN(
     static uint8_t s_lcdBuffer[DEMO_LCD_BUFFER_COUNT][DEMO_BUFFER_HEIGHT][DEMO_BUFFER_WIDTH * DEMO_LCD_BUFFER_BPP],
     FRAME_BUFFER_ALIGN);
-
-
 /*
  * When new frame buffer sent to display, it might not be shown immediately.
  * Application could use callback to get new frame shown notification, at the
@@ -123,7 +126,6 @@ volatile bool s_newFrameShown = false;
 static dc_fb_info_t fbInfo;
 volatile uint8_t s_lcdActiveFbIdx;
 
-static uint8_t s_nor_read_buffer[IMGBUF_SIZE];
 
 
 status_t flexspi_nor_flash_erase_sector(FLEXSPI_Type *base, uint32_t address);
@@ -132,39 +134,20 @@ status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId);
 status_t flexspi_nor_enable_quad_mode(FLEXSPI_Type *base);
 status_t flexspi_nor_erase_chip(FLEXSPI_Type *base);
 void flexspi_nor_flash_init(FLEXSPI_Type *base);
-void QSPIflashSave(uint8_t JPGbuff[]);
 
 
 
 
 
 
-/***********************SD Card DECLARATIONS*******************************/
 
-static status_t sdcardWaitCardInsert(void);
 
-static FATFS g_fileSystem; /* File system object */
-static FIL g_fileObject;   /* File object */
+
 
 
 /*******************************************************************************
  * Code
  ******************************************************************************/
-
-static void BOARD_ResetDisplayMix(void)
-{
-    /*
-     * Reset the displaymix, otherwise during debugging, the
-     * debugger may not reset the display, then the behavior
-     * is not right.
-     */
-    SRC_AssertSliceSoftwareReset(SRC, kSRC_DisplaySlice);
-    while (kSRC_SliceResetInProcess == SRC_GetSliceResetState(SRC, kSRC_DisplaySlice))
-    {
-    }
-}
-
-
 
 /*!
  * @brief Main function
@@ -172,6 +155,9 @@ static void BOARD_ResetDisplayMix(void)
  int main(void)
 {
     bool status=false;
+
+    /* Define the init structure for the output LED pin*/
+    gpio_pin_config_t led_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
 
     BOARD_ConfigMPU();
     BOARD_BootClockRUN();
@@ -193,11 +179,36 @@ static void BOARD_ResetDisplayMix(void)
 
     DEMO_InitDisplay();
 
+    /* Init output LED GPIO. */
+    GPIO_PinInit(USER_LED_GPIO, USER_LED_GPIO_PIN, &led_config);
+
     SPI1_Init();   /* initialize SPI1 */
 
-    /* test sdcard driver: create a directory and save image file*/
-    status=SdCard_setupFiles();
 
+    /* test the SD card driver: create a directory and save image file*/
+    status= TestSdCard();
+    if(status)
+    {
+      PRINTF("SD card test passed!\n");
+    }
+    else
+    {
+     PRINTF("SD card test failed! \n");
+    }
+
+
+#ifdef QFLASHTEST
+    /* test the QSPI flash: write, read and erase */
+    status=QSPIflashSaveImage();
+    if(status)
+    {
+      PRINTF("QSPI Flash test passed!\n");
+    }
+    else
+    {
+     PRINTF("QSPI Flash test failed! \n");
+    }
+#endif
 
     /* test the MX25L4006E Flash */
     status= TestMX25L4006E();
@@ -210,7 +221,6 @@ static void BOARD_ResetDisplayMix(void)
     	PRINTF(" MX25L4006E Flash test failed! \n");
 
     }
-
 
     /*test csi mipi: start mipi  */
     DEMO_CSI_MIPI_RGB();
@@ -251,7 +261,7 @@ static void DEMO_InitCamera(void)
     BOARD_InitCameraResource();
 
     /* CSI input data bus is 24-bit, and save as XRGB8888.. */
-    cameraConfig.pixelFormat                = kVIDEO_PixelFormatXRGB8888; //kVIDEO_PixelFormatRGB888;
+    cameraConfig.pixelFormat                = kVIDEO_PixelFormatXRGB8888;
     cameraConfig.bytesPerPixel              = DEMO_CAMERA_BUFFER_BPP;
     cameraConfig.resolution                 = FSL_VIDEO_RESOLUTION(DEMO_CAMERA_WIDTH, DEMO_CAMERA_HEIGHT);
     cameraConfig.frameBufferLinePitch_Bytes = DEMO_CAMERA_WIDTH * DEMO_CAMERA_BUFFER_BPP;
@@ -327,11 +337,14 @@ static void DEMO_InitDisplay(void)
 
 static void DEMO_CSI_MIPI_RGB(void)
 {
+
     uint32_t cameraReceivedFrameAddr;
+    uint8_t *RawData=NULL;
     void *lcdFrameAddr;
-    bool Ret=false;
-    int s=0;
-    int counter=0;
+
+
+    RawData=s_cameraBuffer;
+
 
     pxp_ps_buffer_config_t psBufferConfig = {
         .pixelFormat = kPXP_PsPixelFormatRGB888, /* Note: This is 32-bit per pixel */
@@ -369,6 +382,8 @@ static void DEMO_CSI_MIPI_RGB(void)
     CAMERA_RECEIVER_Start(&cameraReceiver);
 
 
+	PRINTF("Testing the camera...\n");
+
     while (1)
     {
         /* Wait to get the full frame buffer to show. */
@@ -376,8 +391,7 @@ static void DEMO_CSI_MIPI_RGB(void)
         {
         }
 
-
-        GPIO_PortToggle(USER_LED_GPIO, 1u << USER_LED_GPIO_PIN);
+        //GPIO_PortToggle(USER_LED_GPIO, 1u << USER_LED_GPIO_PIN);
 
         /* Wait for the previous frame buffer is shown, and there is available
            inactive buffer to fill. */
@@ -388,17 +402,13 @@ static void DEMO_CSI_MIPI_RGB(void)
         //if 30 frames are sent
         if(TimeToSave)
         {
-          //CAMERA_RECEIVER_Stop(&cameraReceiver);
+
           DisableIRQ(LCDIF2_IRQn);
           DisableIRQ(LCDIF1_IRQn);
           DisableIRQ(CSI_IRQn);
 
-          //SaveCapturedImage(s_cameraBuffer);
-          Ret= mSDCARDSaveImage(g_bufferWrite,IMGBUF_SIZE);
-
-          QSPIflashSaveImage();
-          //write_JPEG_file (s_cameraBuffer);
-          JpegCompress(s_cameraBuffer);
+          JpegCompress(RawData);
+          GPIO_PortToggle(USER_LED_GPIO, 1u << USER_LED_GPIO_PIN);
 
           NVIC_ClearPendingIRQ(LCDIF2_IRQn);
           NVIC_SetPriority(LCDIF2_IRQn,3);
@@ -406,7 +416,6 @@ static void DEMO_CSI_MIPI_RGB(void)
           EnableIRQ(LCDIF2_IRQn);
           EnableIRQ(CSI_IRQn);
 
-          //CAMERA_RECEIVER_Start(&cameraReceiver);
           TimeToSave=false;
         }
 
@@ -414,10 +423,10 @@ static void DEMO_CSI_MIPI_RGB(void)
         psBufferConfig.bufferAddr = cameraReceivedFrameAddr;
         PXP_SetProcessSurfaceBufferConfig(DEMO_PXP, &psBufferConfig);
 
-       // lcdFrameAddr                   = s_lcdBuffer[s_lcdActiveFbIdx ^ 1];
-       // outputBufferConfig.buffer0Addr = (uint32_t)lcdFrameAddr;
+        lcdFrameAddr                   = s_lcdBuffer[s_lcdActiveFbIdx ^ 1];
+        outputBufferConfig.buffer0Addr = (uint32_t)lcdFrameAddr;
 
-       // PXP_SetOutputBufferConfig(DEMO_PXP, &outputBufferConfig);
+        PXP_SetOutputBufferConfig(DEMO_PXP, &outputBufferConfig);
 
         PXP_Start(DEMO_PXP);
 
@@ -432,510 +441,41 @@ static void DEMO_CSI_MIPI_RGB(void)
 
         /* Show the new frame. */
         s_newFrameShown = false;
-        //g_dc.ops->setFrameBuffer(&g_dc, 0, lcdFrameAddr);
+        g_dc.ops->setFrameBuffer(&g_dc, 0, lcdFrameAddr);
     }
 }
 
 static void DEMO_BufferSwitchOffCallback(void *param, void *switchOffBuffer)
 {
-    static uint8_t counter=0;
-
     s_newFrameShown = true;
     s_lcdActiveFbIdx ^= 1;
 }
 
 
-
-static status_t sdcardWaitCardInsert(void)
+static void BOARD_ResetDisplayMix(void)
 {
-    BOARD_SD_Config(&g_sd, NULL, BOARD_SDMMC_SD_HOST_IRQ_PRIORITY, NULL);
-
-    /* SD host init function */
-    if (SD_HostInit(&g_sd) != kStatus_Success)
+    /*
+     * Reset the displaymix, otherwise during debugging, the
+     * debugger may not reset the display, then the behavior
+     * is not right.
+     */
+    SRC_AssertSliceSoftwareReset(SRC, kSRC_DisplaySlice);
+    while (kSRC_SliceResetInProcess == SRC_GetSliceResetState(SRC, kSRC_DisplaySlice))
     {
-        PRINTF("\r\nSD host init fail\r\n");
-        return kStatus_Fail;
     }
-
-    /* wait card insert */
-    if (SD_PollingCardInsert(&g_sd, kSD_Inserted) == kStatus_Success)
-    {
-        PRINTF("\r\nCard inserted.\r\n");
-        /* power off card */
-        SD_SetCardPower(&g_sd, false);
-        /* power on the card */
-        SD_SetCardPower(&g_sd, true);
-    }
-    else
-    {
-        PRINTF("\r\nCard detect fail.\r\n");
-        return kStatus_Fail;
-    }
-
-    return kStatus_Success;
 }
 
 
 
-static bool SaveCapturedImage(uint8_t cameraBuffer[][DEMO_CAMERA_HEIGHT][DEMO_CAMERA_WIDTH * DEMO_CAMERA_BUFFER_BPP])
-{
-    FRESULT error;
-    DIR directory;               /* Directory object */
-    FILINFO fileInformation;
-    UINT bytesWritten;
-    UINT bytesRead;
-    const TCHAR driverNumberBuffer[3U] = {SDDISK + '0', ':', '/'};
-    volatile bool failedFlag           = false;
-    char ch                            = '0';
-    BYTE work[FF_MAX_SS];
 
-    int size=0;
-
-
-     //Configure SD card
-    if (sdcardWaitCardInsert() != kStatus_Success)
-    {
-      PRINTF("\r\nCard not inserted.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nCard detected.\r\n");
-    }
-
-
-
-    if (f_mount(&g_fileSystem, driverNumberBuffer, 0U))
-    {
-        PRINTF("Mount volume failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("Mount volume succeeded.\r\n");
-    }
-
-#if (FF_FS_RPATH >= 2U)
-    error = f_chdrive((char const *)&driverNumberBuffer[0U]);
-    if (error)
-    {
-        PRINTF("Change drive failed.\r\n");
-        return false;
-    }
-#endif
-
-#if FF_USE_MKFS
-    PRINTF("\r\nMake file system......The time may be long if the card capacity is big.\r\n");
-    if (f_mkfs(driverNumberBuffer, 0, work, sizeof work))
-    {
-        PRINTF("Make file system failed.\r\n");
-        return false;
-    }
-#endif /* FF_USE_MKFS */
-
-    PRINTF("\r\nCreate directory......\r\n");
-    error = f_mkdir(_T("/img_1"));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("Directory exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Make directory failed.\r\n");
-            return false;
-        }
-    }
-    PRINTF("\r\nSave Raw Image\r\n");
-    error = f_open(&g_fileObject, _T("/img_1/jpg_6.dat"), (FA_WRITE | FA_READ | FA_CREATE_ALWAYS));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("File exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Open file failed.\r\n");
-            return false;
-        }
-    }
-
-    PRINTF("\r\nList the file in that directory......\r\n");
-    if (f_opendir(&directory, "/img_1"))
-    {
-        PRINTF("Open directory failed.\r\n");
-        return false;
-    }
-
-    //cameraBuffer[BUFFER_SIZE - 2U] = '\r';
-    //cameraBuffer[BUFFER_SIZE - 1U] = '\n';
-
-    size=DEMO_CAMERA_HEIGHT*DEMO_CAMERA_WIDTH;
-    size=size* DEMO_CAMERA_BUFFER_BPP;
-
-   // memset(cameraBuffer, 'a',size);
-
-    //pass the raw image data to the jpeg compressor
-    //ConvImageToJPEG(cameraBuffer, size);
-
-    PRINTF("\r\nWrite to above created file.\r\n");
-    error = f_write(&g_fileObject, cameraBuffer,size, &bytesWritten);
-    if ((error) || (bytesWritten != size))  //sizeof(cameraBuffer)))
-    {
-       PRINTF("Write file failed. \r\n");
-       failedFlag = true;
-       return false;
-    }
-
-//    /* Move the file pointer */
-//    if (f_lseek(&g_fileObject, 0U))
-//    {
-//            PRINTF("Set file pointer position failed. \r\n");
-//            failedFlag = true;
-//            return false;
-//    }
-//
-//    PRINTF("Read from above created file.\r\n");
-//    memset(g_bufferRead, 0U, sizeof(g_bufferRead));
-//    error = f_read(&g_fileObject, g_bufferRead, sizeof(g_bufferRead), &bytesRead);
-//
-//    if((error) || (bytesRead != sizeof(g_bufferRead)))
-//    {
-//       PRINTF("Read file failed. \r\n");
-//       failedFlag = true;
-//       return false;
-//    }
-//
-//    PRINTF("Compare the read/write content......\r\n");
-//    if (memcmp(g_bufferWrite, g_bufferRead, sizeof(g_bufferWrite)))
-//    {
-//       PRINTF("Compare read/write content isn't consistent.\r\n");
-//       failedFlag = true;
-//       return false;
-//    }
-//    PRINTF("The read/write content is consistent.\r\n");
-
-    PRINTF("\r\nClosing file now.\r\n");
-    if (f_close(&g_fileObject))
-    {
-        PRINTF("\r\nClose file failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nFile closed successfully.\r\n");
-    }
-
-    return true;
-
-}
-
-
-static bool mSDCARDSaveImage(uint8_t ImageBuffer[],int size)
-{
-    FRESULT error;
-    DIR directory;               /* Directory object */
-    FILINFO fileInformation;
-    UINT bytesWritten;
-    UINT bytesRead;
-    const TCHAR driverNumberBuffer[3U] = {SDDISK + '0', ':', '/'};
-    volatile bool failedFlag           = false;
-    char ch                            = '0';
-    BYTE work[FF_MAX_SS];
-
-
-     //Configure SD card
-    if (sdcardWaitCardInsert() != kStatus_Success)
-    {
-      PRINTF("\r\nCard not inserted.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nCard detected.\r\n");
-    }
-
-
-
-    if (f_mount(&g_fileSystem, driverNumberBuffer, 0U))
-    {
-        PRINTF("Mount volume failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("Mount volume succeeded.\r\n");
-    }
-
-#if (FF_FS_RPATH >= 2U)
-    error = f_chdrive((char const *)&driverNumberBuffer[0U]);
-    if (error)
-    {
-        PRINTF("Change drive failed.\r\n");
-        return false;
-    }
-#endif
-
-#if FF_USE_MKFS
-    PRINTF("\r\nMake file system......The time may be long if the card capacity is big.\r\n");
-    if (f_mkfs(driverNumberBuffer, 0, work, sizeof work))
-    {
-        PRINTF("Make file system failed.\r\n");
-        return false;
-    }
-#endif /* FF_USE_MKFS */
-
-    PRINTF("\r\nCreate directory......\r\n");
-    error = f_mkdir(_T("/img_1"));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("Directory exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Make directory failed.\r\n");
-            return false;
-        }
-    }
-    PRINTF("\r\nSave Raw Image\r\n");
-    error = f_open(&g_fileObject, _T("/img_1/jpg_6.dat"), (FA_WRITE | FA_READ | FA_CREATE_ALWAYS));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("File exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Open file failed.\r\n");
-            return false;
-        }
-    }
-
-    PRINTF("\r\nList the file in that directory......\r\n");
-    if (f_opendir(&directory, "/img_1"))
-    {
-        PRINTF("Open directory failed.\r\n");
-        return false;
-    }
-
-    //cameraBuffer[BUFFER_SIZE - 2U] = '\r';
-    //cameraBuffer[BUFFER_SIZE - 1U] = '\n';
-
-    //size=DEMO_CAMERA_HEIGHT*DEMO_CAMERA_WIDTH;
-    //size=size* DEMO_CAMERA_BUFFER_BPP;
-
-   // memset(cameraBuffer, 'a',size);
-
-    //pass the raw image data to the jpeg compressor
-    //ConvImageToJPEG(cameraBuffer, size);
-
-    size=IMGBUF_SIZE;
-
-    PRINTF("\r\nWrite to above created file.\r\n");
-    error = f_write(&g_fileObject, ImageBuffer,size, &bytesWritten);
-    if ((error) || (bytesWritten != size))  //sizeof(cameraBuffer)))
-    {
-       PRINTF("Write file failed. \r\n");
-       failedFlag = true;
-       return false;
-    }
-
-//    /* Move the file pointer */
-//    if (f_lseek(&g_fileObject, 0U))
-//    {
-//            PRINTF("Set file pointer position failed. \r\n");
-//            failedFlag = true;
-//            return false;
-//    }
-//
-//    PRINTF("Read from above created file.\r\n");
-//    memset(g_bufferRead, 0U, sizeof(g_bufferRead));
-//    error = f_read(&g_fileObject, g_bufferRead, sizeof(g_bufferRead), &bytesRead);
-//
-//    if((error) || (bytesRead != sizeof(g_bufferRead)))
-//    {
-//       PRINTF("Read file failed. \r\n");
-//       failedFlag = true;
-//       return false;
-//    }
-//
-//    PRINTF("Compare the read/write content......\r\n");
-//    if (memcmp(g_bufferWrite, g_bufferRead, sizeof(g_bufferWrite)))
-//    {
-//       PRINTF("Compare read/write content isn't consistent.\r\n");
-//       failedFlag = true;
-//       return false;
-//    }
-//    PRINTF("The read/write content is consistent.\r\n");
-
-    PRINTF("\r\nClosing file now.\r\n");
-    if (f_close(&g_fileObject))
-    {
-        PRINTF("\r\nClose file failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nFile closed successfully.\r\n");
-    }
-
-    return true;
-
-}
-
-static bool SdCard_setupFiles(void)
-{
-    FRESULT error;
-    DIR directory;               /* Directory object */
-    FILINFO fileInformation;
-    UINT bytesWritten;
-    UINT bytesRead;
-    const TCHAR driverNumberBuffer[3U] = {SDDISK + '0', ':', '/'};
-    volatile bool failedFlag           = false;
-    char ch                            = '0';
-    BYTE work[FF_MAX_SS];
-
-
-    //Configure SD card
-    if (sdcardWaitCardInsert() != kStatus_Success)
-    {
-      PRINTF("\r\nCard not inserted.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nCard detected.\r\n");
-    }
-
-    if (f_mount(&g_fileSystem, driverNumberBuffer, 0U))
-    {
-        PRINTF("Mount volume failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("Mount volume succeeded.\r\n");
-    }
-
-#if (FF_FS_RPATH >= 2U)
-    error = f_chdrive((char const *)&driverNumberBuffer[0U]);
-    if (error)
-    {
-        PRINTF("Change drive failed.\r\n");
-        return false;
-    }
-#endif
-
-#if FF_USE_MKFS
-    PRINTF("\r\nMake file system......The time may be long if the card capacity is big.\r\n");
-    if (f_mkfs(driverNumberBuffer, 0, work, sizeof work))
-    {
-        PRINTF("Make file system failed.\r\n");
-        return false;
-    }
-#endif /* FF_USE_MKFS */
-
-    PRINTF("\r\nCreate directory......\r\n");
-    error = f_mkdir(_T("/img_1"));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("Directory exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Make directory failed.\r\n");
-            return false;
-        }
-    }
-
-    PRINTF("\r\nCreate a file in that directory......\r\n");
-    error = f_open(&g_fileObject, _T("/img_1/jpg_5.dat"), (FA_WRITE | FA_READ | FA_CREATE_ALWAYS));
-    if (error)
-    {
-        if (error == FR_EXIST)
-        {
-            PRINTF("File exists.\r\n");
-        }
-        else
-        {
-            PRINTF("Open file failed.\r\n");
-            return false;
-        }
-    }
-
-    PRINTF("\r\nList the file in that directory......\r\n");
-    if (f_opendir(&directory, "/img_1"))
-    {
-        PRINTF("Open directory failed.\r\n");
-        return false;
-    }
-
-    g_bufferWrite[IMGBUF_SIZE - 2U] = '\r';
-    g_bufferWrite[IMGBUF_SIZE - 1U] = '\n';
-
-    PRINTF("\r\nWrite to above created file.\r\n");
-    error = f_write(&g_fileObject, g_bufferWrite, sizeof(g_bufferWrite), &bytesWritten);
-    if ((error) || (bytesWritten != sizeof(g_bufferWrite)))
-    {
-       PRINTF("Write file failed. \r\n");
-       failedFlag = true;
-       return false;
-    }
-
-    /* Move the file pointer */
-    if (f_lseek(&g_fileObject, 0U))
-    {
-            PRINTF("Set file pointer position failed. \r\n");
-            failedFlag = true;
-            return false;
-    }
-
-    PRINTF("Read from above created file.\r\n");
-    memset(g_bufferRead, 0U, sizeof(g_bufferRead));
-    error = f_read(&g_fileObject, g_bufferRead, sizeof(g_bufferRead), &bytesRead);
-
-    if((error) || (bytesRead != sizeof(g_bufferRead)))
-    {
-       PRINTF("Read file failed. \r\n");
-       failedFlag = true;
-       return false;
-    }
-
-    PRINTF("Compare the read/write content......\r\n");
-    if (memcmp(g_bufferWrite, g_bufferRead, sizeof(g_bufferWrite)))
-    {
-       PRINTF("Compare read/write content isn't consistent.\r\n");
-       failedFlag = true;
-       return false;
-    }
-    PRINTF("The read/write content is consistent.\r\n");
-
-    PRINTF("\r\nClosing file now.\r\n");
-    if (f_close(&g_fileObject))
-    {
-        PRINTF("\r\nClose file failed.\r\n");
-        return false;
-    }
-    else
-    {
-      PRINTF("\r\nFile closed successfully.\r\n");
-    }
-
-    return true;
-}
-
-
-int QSPIflashSaveImage(void)
+/*******************************************************************************
+* Function Name  : QSPIflashSaveImage
+* Description    : This function tests the read, write, erase for QSPI flash
+* Return         : true or false
+*******************************************************************************/
+bool QSPIflashSaveImage(void)
 {
 	status_t status;
-	uint32_t i = 0;
 	uint8_t vendorID = 0;
 
 	PRINTF("\r\nTesting the Flash started!\r\n");
@@ -947,7 +487,7 @@ int QSPIflashSaveImage(void)
 	status = flexspi_nor_get_vendor_id(FLASH_FLEXSPI, &vendorID);
 	if (status != kStatus_Success)
 	{
-	   return status;
+	   return false;
 	}
     PRINTF("Vendor ID: 0x%x\r\n", vendorID);
 
@@ -956,7 +496,7 @@ int QSPIflashSaveImage(void)
    status = flexspi_nor_enable_quad_mode(FLASH_FLEXSPI);
    if (status != kStatus_Success)
    {
-       return status;
+       return false;
    }
 
    /* Erase sectors. */
@@ -965,7 +505,7 @@ int QSPIflashSaveImage(void)
    if (status != kStatus_Success)
    {
        PRINTF("Erase sector failure !\r\n");
-       return -1;
+       return false;
    }
 
 
@@ -974,13 +514,14 @@ int QSPIflashSaveImage(void)
 
    DCACHE_InvalidateByRange(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE, FLASH_PAGE_SIZE);
 
-   memcpy(s_nor_read_buffer, (void *)(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE),
-          sizeof(s_nor_read_buffer));
+  // memcpy(s_nor_read_buffer, (void *)(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE),sizeof(s_nor_read_buffer));
+   memcpy(g_bufferRead, (void *)(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE),sizeof(g_bufferRead));
 
-   if (memcmp(g_bufferWrite, s_nor_read_buffer, sizeof(g_bufferWrite)))
+   //if (memcmp(g_bufferWrite, s_nor_read_buffer, sizeof(g_bufferWrite)))
+   if (memcmp(g_bufferWrite, g_bufferRead, sizeof(g_bufferWrite)))
    {
        PRINTF("Erase data -  read out data value incorrect !\r\n ");
-       return -1;
+       return false;
    }
    else
    {
@@ -993,24 +534,26 @@ int QSPIflashSaveImage(void)
    if (status != kStatus_Success)
    {
        PRINTF("Page program failure !\r\n");
-       return -1;
+       return false;
    }
 
    DCACHE_InvalidateByRange(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE, FLASH_PAGE_SIZE);
 
-   memcpy(s_nor_read_buffer, (void *)(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE),
-          sizeof(s_nor_read_buffer));
+   memcpy(g_bufferRead, (void *)(FLASH_FLEXSPI_AMBA_BASE + FLASH_SECTOR * SECTOR_SIZE),sizeof(g_bufferRead));
 
    //if (memcmp(s_nor_read_buffer, s_nor_program_buffer, sizeof(s_nor_program_buffer)) != 0)
-   if (memcmp(s_nor_read_buffer, g_bufferWrite, sizeof(g_bufferWrite)) != 0)
+   if (memcmp(g_bufferRead, g_bufferWrite, sizeof(g_bufferWrite)) != 0)
    {
        PRINTF("Program data -  read out data value incorrect !\r\n ");
-       return -1;
+       return false;
    }
    else
    {
        PRINTF("Program data - successfully. \r\n");
    }
 
+    return true;
  }
+
+
 

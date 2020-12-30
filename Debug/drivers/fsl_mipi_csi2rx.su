@@ -1,6 +1,3 @@
-fsl_clock.h:2302:20:CLOCK_ControlGate	16	static
-fsl_clock.h:2320:20:CLOCK_EnableClock	16	static
-fsl_clock.h:2330:20:CLOCK_DisableClock	16	static
-fsl_mipi_csi2rx.c:197:10:CSI2RX_GetInstance	24	static
+fsl_mipi_csi2rx.c:197:10:CSI2RX_GetInstance	8	static
 fsl_mipi_csi2rx.c:220:6:CSI2RX_Init	16	static
-fsl_mipi_csi2rx.c:250:6:CSI2RX_Deinit	16	static
+fsl_mipi_csi2rx.c:250:6:CSI2RX_Deinit	8	static

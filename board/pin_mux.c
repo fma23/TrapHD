@@ -234,13 +234,10 @@ BOARD_InitPins:
 void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_Iomuxc);           /* LPCG on: LPCG is ON. */
 
-
-//  IOMUXC_SetPinMux(
-//        IOMUXC_GPIO_AD_24_LPUART1_TXD,          /* GPIO_AD_24 is configured as LPUART1_TXD */
-//        0U);                                    /* Software Input On Field: Input Path is determined by functionality */
-//    IOMUXC_SetPinMux(
-//        IOMUXC_GPIO_AD_25_LPUART1_RXD,          /* GPIO_AD_25 is configured as LPUART1_RXD */
-//        0U);
+ //user LED GREEN
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_AD_04_GPIO9_IO03,           /* GPIO_AD_04 is configured as GPIO9_IO03 */
+      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
 
   //LPSPI1
   IOMUXC_SetPinMux(
@@ -419,19 +416,6 @@ void BOARD_InitPins(void) {
         0x0AU);                                 /* PDRV Field: normal driver
                                                    Pull Down Pull Up Field: PD
                                                    Open Drain Field: Disabled */
-    //UART IOMUXC_SetPinConfig
-//    IOMUXC_SetPinConfig(
-//         IOMUXC_GPIO_AD_25_LPUART1_RXD,          /* GPIO_AD_25 PAD functional properties : */
-//         0x02U);                                 /* Slew Rate Field: Slow Slew Rate
-//                                                    Drive Strength Field: high driver
-//                                                    Pull / Keep Select Field: Pull Disable, Highz
-//                                                    Pull Up / Down Config. Field: Weak pull down
-//                                                    Open Drain Field: Disabled */
-//     IOMUXC_SetPinConfig(
-//         IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS,    /* GPIO_SD_B2_05 PAD functional properties : */
-//         0x0AU);                                 /* PDRV Field: normal driver
-//                                                    Pull Down Pull Up Field: PD
-//                                                    Open Drain Field: Disabled */
 }
 
 /***********************************************************************************************************************

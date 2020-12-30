@@ -30,29 +30,59 @@
 /* Image definition. */
 #define IMAGE_WIDTH         CAMERA_WIDTH
 #define IMAGE_HEIGHT        CAMERA_HEIGHT
-#define COMPRESS_LINES      1u
+#define ImgBuffSize         3*CAMERA_HEIGHT*CAMERA_WIDTH
+
 
    
-AT_NONCACHEABLE_SECTION_ALIGN(uint8_t JpegScanlines[COMPRESS_LINES][IMAGE_WIDTH * 3u], FRAME_BUFFER_ALIGN);
-
-
-void rgb565_2_rgb888(uint8_t *rgb565, uint8_t *rgb888, int pixels);
-status_t JpegCompress(uint32_t buffer[]);
+AT_NONCACHEABLE_SECTION_ALIGN(uint8_t ImageRGBBuf[ImgBuffSize], FRAME_BUFFER_ALIGN);
 
 
 
-status_t JpegCompress(uint32_t buffer[])
+
+status_t JpegCompress(uint8_t *buffer);
+
+
+
+
+
+
+
+/*******************************************************************************
+* Function Name  : JpegCompress
+* Description    : this function compresses raw image data
+* Return         : status_t value (0 or 1)
+*******************************************************************************/
+status_t JpegCompress(uint8_t *buffer)
 {
     struct jpeg_compress_struct cinfo;
     struct jpeg_error_mgr jerr;
-    uint32_t (*scanlines)[IMAGE_WIDTH] = (uint32_t (*)[IMAGE_WIDTH])buffer;
     JSAMPROW row_pointer[1];
 
     FILE fJpeg;
     char JpegFilename[20];
     static uint32_t JpegFilenameIndex = 0u;
+    int counter=0;
+    int s=0;
 
     PRINTF("Start of JPEG Compression... ");
+
+    //convert to RGB888
+    for(int m=0; m<CAMERA_HEIGHT;m++)
+    {
+       for(int n=0; n<4*CAMERA_WIDTH;n++)
+       {
+         ImageRGBBuf[s] = *buffer;
+         buffer++;
+         s++;
+         counter++;
+            if(counter == 3)
+        	 {
+        		n++;
+        		buffer++;
+        		counter = 0;
+        	}
+        }
+     }
 
 
     if(JpegFilenameIndex > 9999u)
@@ -60,7 +90,7 @@ status_t JpegCompress(uint32_t buffer[])
        JpegFilenameIndex = 0u;
    }
 
-   sprintf(JpegFilename, "/IMG_%04d.jpg", ++JpegFilenameIndex);
+   sprintf(JpegFilename, "/img_1/jpg_5.dat", ++JpegFilenameIndex);
 
    /* Open the output file. */
    if(f_open(&fJpeg, _T(JpegFilename), (FA_WRITE | FA_CREATE_ALWAYS)))
@@ -84,7 +114,7 @@ status_t JpegCompress(uint32_t buffer[])
     /* Specify the source format. */
     cinfo.image_width = (JDIMENSION)IMAGE_WIDTH;
     cinfo.image_height = (JDIMENSION)IMAGE_HEIGHT;
-    cinfo.input_components = 4u;            /*  # of color components per pixel */
+    cinfo.input_components = 3u;            /*  # of color components per pixel */
     cinfo.in_color_space = JCS_RGB;         /*  colorspace of input image */
 
     /* Start compressor */
@@ -97,7 +127,7 @@ status_t JpegCompress(uint32_t buffer[])
      * Here the array is only one element long, but you could pass
      * more than one scanline at a time if that's more convenient.
      */
-	row_pointer[0] = (JSAMPROW)&buffer[cinfo.next_scanline * cinfo.image_width * cinfo.input_components];
+	row_pointer[0] = (JSAMPROW)&ImageRGBBuf[cinfo.next_scanline * cinfo.image_width * cinfo.input_components];
 	jpeg_write_scanlines(&cinfo, row_pointer, 1);
    }
 
@@ -110,17 +140,5 @@ status_t JpegCompress(uint32_t buffer[])
     PRINTF("Done: %s is saved. \r\n", JpegFilename);
 
     return kStatus_Success;
-}
-
-
-void rgb565_2_rgb888(uint8_t *rgb565, uint8_t *rgb888, int pixels)
-{
-    /* RGB565 in little-endian: "G2G1G0B4B3B2B1B0 R4R3R2R1R0G5G4G3 */
-    for(uint32_t i=0; i<pixels; i++)
-    {
-        rgb888[3*i] = ((rgb565[2*i] & 0x1F)<<3) | (rgb565[2*i] & 0x07);/*B4B3B2B1B0B2B1B0*/
-        rgb888[3*i+1] = ((rgb565[2*i+1] & 0x07)<<5) | ((rgb565[2*i] & 0xE0)>>3) | ((rgb565[2*i] & 0x60)>>5);/*G5G4G3G2G1G0G1G0*/
-        rgb888[3*i+2] = (rgb565[2*i+1] & 0xF8) | ((rgb565[2*i+1] & 0x38)>>3); /*R4R3R2R1R0R2R1R0*/
-    }
 }
 

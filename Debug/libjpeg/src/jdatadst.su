@@ -1,9 +1,8 @@
-jconfig.h:47:24:write_file	24	static
-jdatadst.c:64:1:init_destination	24	static
-jdatadst.c:78:1:init_mem_destination	16	static
-jdatadst.c:108:1:empty_output_buffer	24	static
-jdatadst.c:123:1:empty_mem_output_buffer	32	static
+jdatadst.c:64:1:init_destination	16	static
+jdatadst.c:78:1:init_mem_destination	0	static
+jdatadst.c:180:1:term_mem_destination	0	static
 jdatadst.c:163:1:term_destination	24	static
-jdatadst.c:180:1:term_mem_destination	24	static
-jdatadst.c:196:1:jpeg_stdio_dest	24	static
-jdatadst.c:235:1:jpeg_mem_dest	32	static
+jdatadst.c:108:1:empty_output_buffer	16	static
+jdatadst.c:123:1:empty_mem_output_buffer	24	static
+jdatadst.c:196:1:jpeg_stdio_dest	16	static
+jdatadst.c:235:1:jpeg_mem_dest	24	static

@@ -1,6 +1,6 @@
-jerror.c:73:1:error_exit	16	static
-jerror.c:103:1:output_message	216	static
-jerror.c:133:1:emit_message	24	static
-jerror.c:162:1:format_message	88	static
-jerror.c:217:1:reset_error_mgr	16	static
+jerror.c:133:1:emit_message	8	static
+jerror.c:217:1:reset_error_mgr	0	static
+jerror.c:162:1:format_message	40	static
+jerror.c:103:1:output_message	208	static
+jerror.c:73:1:error_exit	8	static
 jerror.c:236:1:jpeg_std_error	16	static

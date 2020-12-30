@@ -1,10 +1,6 @@
-fsl_clock.h:2281:20:CLOCK_SetRootClock	16	static
-fsl_clock.h:2302:20:CLOCK_ControlGate	16	static
-fsl_clock.h:2320:20:CLOCK_EnableClock	16	static
+camera_support.c:82:13:BOARD_PullCameraPowerDownPin	0	static
+camera_support.c:70:13:BOARD_PullCameraResetPin	0	static
 camera_support.c:64:6:CSI_IRQHandler	8	static
-camera_support.c:70:13:BOARD_PullCameraResetPin	16	static
-camera_support.c:82:13:BOARD_PullCameraPowerDownPin	16	static
-camera_support.c:94:6:BOARD_EarlyInitCamera	4	static
-camera_support.c:101:6:BOARD_InitCameraResource	8	static
-camera_support.c:108:6:BOARD_InitMipiCsi	48	static
-camera_support.c:248:17:BOARD_VerifyCameraClockSource	16	static
+camera_support.c:94:6:BOARD_EarlyInitCamera	0	static
+camera_support.c:101:6:BOARD_InitCameraResource	0	static
+camera_support.c:108:6:BOARD_InitMipiCsi	16	static
